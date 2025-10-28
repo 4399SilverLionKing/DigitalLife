@@ -1,0 +1,245 @@
+# ==============================================
+# CulinAI - Multi-Platform Project .gitignore
+# ==============================================
+
+# ====================================
+# 通用忽略文件
+# ====================================
+
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE 和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.metadata
+.classpath
+.settings/
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ====================================
+# Node.js / JavaScript / TypeScript
+# ====================================
+
+# 依赖包
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# 构建输出
+dist/
+build/
+out/
+.next/
+
+# 缓存目录
+.npm
+.eslintcache
+.cache/
+
+# 覆盖率报告
+coverage/
+*.lcov
+.nyc_output
+
+# TypeScript
+*.tsbuildinfo
+
+# ====================================
+# React Native / Expo 移动端
+# ====================================
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
+
+# Metro
+.metro-health-check*
+
+# ====================================
+# Next.js Web端
+# ====================================
+
+# Next.js
+app/client/client-web/.next/
+app/client/client-web/out/
+
+# Vercel
+app/client/client-web/.vercel
+
+# ====================================
+# Java / Spring Boot 后端
+# ====================================
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Java编译文件
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+
+# Java运行时
+hs_err_pid*
+replay_pid*
+
+# Spring Boot
+.springBeans
+.sts4-cache/
+
+# ====================================
+# Python 后端服务
+# ====================================
+
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 分发/打包
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 单元测试/覆盖率报告
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# 虚拟环境
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Flask/FastAPI
+instance/
+.webassets-cache
+*.db
+
+# 机器学习模型文件
+*.pkl
+*.pickle
+*.joblib
+models/trained/
+models/checkpoints/
+
+# ====================================
+# 数据库相关
+# ====================================
+
+# H2 Database
+*.trace.db
+*.lock.db
+
+# ====================================
+# 配置和密钥文件
+# ====================================
+
+# 敏感配置文件
+**/application-prod.yml
+**/application-dev.yml
+**/application-local.yml
+
+# API密钥
+api-keys.json
+secrets.json
+
+# SSL证书
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# ====================================
+# 其他
+# ====================================
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 压缩包
+*.7z
+*.zip
+*.rar
+*.tar.gz
+
+# 生成的文件
+generated/
+auto-generated/
+
+# 临时上传文件
+uploads/temp/
+temp/
