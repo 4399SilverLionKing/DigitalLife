@@ -35,9 +35,6 @@ type SideBarProps = {
 // 3. 更新默认数据，为每个项目添加 href 路由地址
 const defaultNavItems: NavItem[] = [
   { id: 'home', icon: Home, label: 'Overview', href: '/' },
-  { id: 'tools', icon: Pickaxe, label: 'Tools', href: '/tools' },
-  { id: 'create', icon: PenSquare, label: 'Create', href: '/create' },
-  { id: 'messages', icon: MessageCircle, label: 'Messages', href: '/messages' },
   { id: 'thought', icon: Brain, label: 'Thought', href: '/thought' },
 ];
 

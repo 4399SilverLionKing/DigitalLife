@@ -1,8 +1,11 @@
 'use client';
 
+import CreationDrawer from '@/components/CreationDrawer';
 import Gallery from '@/components/Gallery';
 import LifePart from '@/components/LifePart';
+import MessageDrawer from '@/components/MessageDrawer';
 import MessagePart from '@/components/MessagePart';
+import MessagePlus from '@/components/MessagePlus';
 import RightBar from '@/components/RightBar';
 import TextType from '@/components/TextType';
 import ThoughtItem from '@/components/ThoughtItem';
@@ -22,7 +25,7 @@ export default function Home() {
 
         {/* 作品区 (Creations Section) */}
         <div className="mb-10 h-[40%]">
-          <h2 className="mb-2 text-xl font-bold">AI Creations</h2>
+          <CreationDrawer />
           <div className="flex h-full flex-row">
             <Gallery />
           </div>
@@ -30,7 +33,7 @@ export default function Home() {
 
         {/* 思考区 (Thoughts Section) - 使用 flex-grow 填满剩余空间 */}
         <div className="flex flex-grow flex-col">
-          <h2 className="mb-5 text-xl font-bold">Latest Thoughts</h2>
+          <h2 className="mb-5 text-xl font-bold">Latest Thought</h2>
           <ThoughtItem role="Desider" content="Who am I?" />
         </div>
       </div>
@@ -59,7 +62,12 @@ export default function Home() {
         </div>
 
         {/* 消息区 (Messages Section)*/}
-        <div className="flex h-3/7 flex-col">
+        <div className="flex h-4/7 flex-col">
+          {/* 顶部标题和按钮 */}
+          <div className="mb-2 flex items-center justify-between">
+            <MessageDrawer />
+            <MessagePlus />
+          </div>
           <MessagePart />
         </div>
       </div>

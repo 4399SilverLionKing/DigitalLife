@@ -19,9 +19,8 @@ const toolsData: GlassIconsItem[] = [
   { icon: <PenSquare />, label: '4456' },
 ];
 
-export default function RightSidebar() {
+export default function RightBar() {
   return (
-    // 使用 w-[120px] 或类似固定宽度，以更好地容纳图标
     <aside className="flex w-[100px] flex-col justify-center gap-6">
       {/* 
         顶部统计区:

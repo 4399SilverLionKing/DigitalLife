@@ -1,6 +1,9 @@
 import React from 'react';
 
-// 为组件的 props 定义 TypeScript 接口，增强代码健壮性
+import { cn } from '@/lib/utils/tailwindUtil';
+
+// 导入我们刚刚创建的 cn 函数
+
 export interface MessageItemProps {
   /** 消息内容 */
   content: string;
@@ -8,6 +11,8 @@ export interface MessageItemProps {
   timestamp: string;
   /** 消息是否回复了 */
   isReply: boolean;
+  /** 允许父组件传入额外的 className 来覆盖或扩展样式 */
+  className?: string;
 }
 
 /**
@@ -19,15 +24,21 @@ const MessageItem: React.FC<MessageItemProps> = ({
   content,
   timestamp,
   isReply,
+  className,
 }) => {
   return (
-    // 添加 'relative' 类，以便绝对定位子元素
-    <div className="relative flex h-22 items-center justify-between gap-4 rounded-4xl bg-[#321517] p-3 text-white transition-colors hover:bg-white/5">
+    <div
+      className={cn(
+        'relative flex h-23 cursor-pointer items-center justify-between gap-4 rounded-4xl bg-[#321517] p-3 text-white transition-colors hover:bg-white/5',
+        className
+      )}
+    >
       {/* 状态指示圈：绝对定位在右上角 */}
       <div
-        className={`absolute top-0 right-0 h-5 w-5 rounded-full ${
+        className={cn(
+          'absolute top-0 right-0 h-5 w-5 rounded-full',
           isReply ? 'bg-[#90BB73]' : 'bg-[#AF4843]'
-        }`}
+        )}
       />
 
       {/* 消息内容：占据大部分空间 */}
