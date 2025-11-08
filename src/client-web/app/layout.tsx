@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import ClickSpark from '@/components/ClickSpark';
-import SideBar from '@/components/SideBar';
+import ClickSpark from '@/common/components/ClickSpark';
+import SideBar from '@/common/components/SideBar';
 
 import './globals.css';
 import Providers from './providers';

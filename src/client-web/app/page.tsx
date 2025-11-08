@@ -1,14 +1,14 @@
 'use client';
 
-import CreationDrawer from '@/components/CreationDrawer';
-import Gallery from '@/components/Gallery';
-import LifePart from '@/components/LifePart';
-import MessageDrawer from '@/components/MessageDrawer';
-import MessagePart from '@/components/MessagePart';
-import MessagePlus from '@/components/MessagePlus';
-import RightBar from '@/components/RightBar';
-import TextType from '@/components/TextType';
-import ThoughtItem from '@/components/ThoughtItem';
+import CreationDrawer from '@/features/creation/components/CreationDrawer';
+import Gallery from '@/common/components/Gallery';
+import LifePart from '@/features/life/components/LifePart';
+import MessageDrawer from '@/features/life/components/MessageDrawer';
+import MessagePart from '@/features/life/components/MessagePart';
+import MessagePlus from '@/features/life/components/MessagePlus';
+import RightBar from '@/features/life/components/RightBar';
+import TextType from '@/common/components/TextType';
+import ThoughtItem from '@/features/thought/components/ThoughtItem';
 
 export default function Home() {
   return (

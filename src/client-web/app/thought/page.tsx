@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ThoughtItem from '@/components/ThoughtItem';
+import ThoughtItem from '@/features/thought/components/ThoughtItem';
 
 const thoughtsData = [
   {
