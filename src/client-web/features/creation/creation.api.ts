@@ -1,11 +1,12 @@
 // src/features/creation/creation.api.ts
-import customFetch from '@/common/utils/customFetch';
+import customFetch from '@/common/utils/customFetch/index';
+
 import type {
-  PaginationParams,
-  CreationListItem,
-  CreationDetail,
   CreationComment,
+  CreationDetail,
+  CreationListItem,
   LikeCreationResponse,
+  PaginationParams,
   PostCommentPayload,
 } from './creation.type';
 
@@ -14,8 +15,12 @@ import type {
  * @param params - 分页参数 { page, pageSize }
  * @returns 作品列表数组
  */
-export const getCreations = async (params: PaginationParams): Promise<CreationListItem[]> => {
-  const response = await customFetch.get<CreationListItem[]>('/api/creations', { params });
+export const getCreations = async (
+  params: PaginationParams
+): Promise<CreationListItem[]> => {
+  const response = await customFetch.get<CreationListItem[]>('/api/creations', {
+    params,
+  });
   return response.data;
 };
 
@@ -24,8 +29,12 @@ export const getCreations = async (params: PaginationParams): Promise<CreationLi
  * @param creationId - 作品的唯一ID
  * @returns 作品详情对象
  */
-export const getCreationDetail = async (creationId: number): Promise<CreationDetail> => {
-  const response = await customFetch.get<CreationDetail>(`/api/creations/${creationId}`);
+export const getCreationDetail = async (
+  creationId: number
+): Promise<CreationDetail> => {
+  const response = await customFetch.get<CreationDetail>(
+    `/api/creations/${creationId}`
+  );
   return response.data;
 };
 
@@ -39,7 +48,10 @@ export const getCreationComments = async (
   creationId: number,
   params: PaginationParams
 ): Promise<CreationComment[]> => {
-  const response = await customFetch.get<CreationComment[]>(`/api/creations/${creationId}/comments`, { params });
+  const response = await customFetch.get<CreationComment[]>(
+    `/api/creations/${creationId}/comments`,
+    { params }
+  );
   return response.data;
 };
 
@@ -48,8 +60,12 @@ export const getCreationComments = async (
  * @param creationId - 作品的唯一ID
  * @returns 包含最新点赞数对象
  */
-export const likeCreation = async (creationId: number): Promise<LikeCreationResponse> => {
-  const response = await customFetch.post<LikeCreationResponse>(`/api/creations/${creationId}/like`);
+export const likeCreation = async (
+  creationId: number
+): Promise<LikeCreationResponse> => {
+  const response = await customFetch.post<LikeCreationResponse>(
+    `/api/creations/${creationId}/like`
+  );
   return response.data;
 };
 
@@ -66,8 +82,11 @@ export const postCreationComment = async ({
   creationId: number;
   payload: PostCommentPayload;
 }): Promise<CreationComment> => {
-  const response = await customFetch.post<CreationComment>(`/api/creations/${creationId}/comments`, {
-    body: JSON.stringify(payload),
-  });
+  const response = await customFetch.post<CreationComment>(
+    `/api/creations/${creationId}/comments`,
+    {
+      body: JSON.stringify(payload),
+    }
+  );
   return response.data;
 };

@@ -1,16 +1,24 @@
 'use client';
 
-import CreationDrawer from '@/features/creation/components/CreationDrawer';
 import Gallery from '@/common/components/Gallery';
+import TextType from '@/common/components/TextType';
+import CreationDrawer from '@/features/creation/components/CreationDrawer';
 import LifePart from '@/features/life/components/LifePart';
 import MessageDrawer from '@/features/life/components/MessageDrawer';
 import MessagePart from '@/features/life/components/MessagePart';
 import MessagePlus from '@/features/life/components/MessagePlus';
 import RightBar from '@/features/life/components/RightBar';
-import TextType from '@/common/components/TextType';
 import ThoughtItem from '@/features/thought/components/ThoughtItem';
+import { useGetThoughts } from '@/features/thought/thought.hook';
 
 export default function Home() {
+  const { data: thoughts } = useGetThoughts({
+    page: 1,
+    page_size: 1,
+  });
+
+  const latestThought = thoughts && thoughts.length > 0 ? thoughts[0] : null;
+
   return (
     // 主容器：黑色背景，水平flex布局，有内边距和间距
     <main className="flex h-full w-full flex-row gap-10 p-6 text-white">
@@ -34,7 +42,12 @@ export default function Home() {
         {/* 思考区 (Thoughts Section) - 使用 flex-grow 填满剩余空间 */}
         <div className="flex flex-grow flex-col">
           <h2 className="mb-5 text-xl font-bold">Latest Thought</h2>
-          <ThoughtItem role="Desider" content="Who am I?" />
+          {latestThought && (
+            <ThoughtItem
+              role={latestThought.agentName}
+              content={latestThought.content}
+            />
+          )}
         </div>
       </div>
 

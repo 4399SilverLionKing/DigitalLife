@@ -1,143 +1,166 @@
-from typing import List
+# File: app/api/routes/creation.py
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, Field
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlmodel import select, desc
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.database import get_session
-from app.models import Creation as DBCreation
-from app.models import Comment as DBComment
-from app.schemas.base_response import BaseResponse
-from app.schemas.creation import Creation as CreationSchema
-from app.schemas.comment import Comment as CommentSchema
+from app.models import Creation, Comment  # 假设这些模型已在 app/models.py 中定义
+from app.schemas.creation import (
+    CreationListResponse,
+    CreationReadList,
+    CreationDetailResponse,
+    CreationReadDetail,
+    CommentListResponse,
+    CommentRead,
+    CreationLikeResponse,
+    CreationLikeUpdate,
+    CommentCreateResponse,
+    CommentCreate,
+)
 
-router = APIRouter(prefix="/creations", tags=["creations"])
-
-
-class CreationListResponse(BaseResponse):
-    data: List[CreationSchema]
-
-
-class CreationDetailResponse(BaseResponse):
-    data: CreationSchema
-
-
-class CreationCommentListResponse(BaseResponse):
-    data: List[CommentSchema]
+router = APIRouter(prefix="/creations", tags=["Creations"])
 
 
-class CreationLikeResponse(BaseResponse):
-    message: str = "Like added successfully"
-    data: dict = {}
-
-
-class CreationCommentCreateRequest(BaseModel):
-    content: str = Field(..., min_length=1, description="Comment content")
-
-
-class CreationCommentCreateResponse(BaseResponse):
-    message: str = "Comment created successfully"
-    data: CommentSchema
-
-
-@router.get("", response_model=CreationListResponse)
-async def list_creations(
-    num: int = Query(10, ge=1, le=100, description="Number of creations to return"),
-    session: AsyncSession = Depends(get_session),
+@router.get("/", response_model=CreationListResponse, summary="获取作品列表")
+async def get_creation_list(
+    *,
+    db: AsyncSession = Depends(get_session),
+    page: int = Query(1, ge=1, description="页码，从1开始"),
+    page_size: int = Query(10, ge=1, le=100, description="每页数量")
 ) -> CreationListResponse:
-    """Return the latest creations with an optional limit."""
-    statement = select(DBCreation).order_by(desc(DBCreation.created_at)).limit(num)
-    result = await session.exec(statement)
-    creations = result.all()
-    creations_schema = [CreationSchema.model_validate(record) for record in creations]
-    return CreationListResponse(data=creations_schema)
+    """
+    Asynchronously retrieves a paginated list of creations.
+    """
+    offset = (page - 1) * page_size
+    statement = (
+        select(Creation).offset(offset).limit(page_size).order_by(desc(Creation.id))
+    )
+    result = await db.exec(statement)
+    creations_db = result.all()
+
+    # 将数据库模型转换为Pydantic响应模型
+    creations_data = [CreationReadList.model_validate(c) for c in creations_db]
+
+    return CreationListResponse(data=creations_data)
 
 
-@router.get("/{creation_id}", response_model=CreationDetailResponse)
+@router.get(
+    "/{creation_id}", response_model=CreationDetailResponse, summary="获取单个作品详情"
+)
 async def get_creation_detail(
-    creation_id: int,
-    session: AsyncSession = Depends(get_session),
+    creation_id: int, db: AsyncSession = Depends(get_session)
 ) -> CreationDetailResponse:
-    """Return a creation detail by id."""
-    statement = select(DBCreation).where(DBCreation.id == creation_id)
-    result = await session.exec(statement)
-    creation = result.first()
+    """
+    Asynchronously retrieves the detailed information for a single creation by its ID.
+    """
+    creation_db = await db.get(Creation, creation_id)
+    if not creation_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Creation not found"
+        )
 
-    if not creation:
-        raise HTTPException(status_code=404, detail="Creation not found")
-
-    return CreationDetailResponse(data=CreationSchema.model_validate(creation))
+    creation_data = CreationReadDetail.model_validate(creation_db)
+    return CreationDetailResponse(data=creation_data)
 
 
-@router.get("/{creation_id}/comments", response_model=CreationCommentListResponse)
-async def list_creation_comments(
+@router.get(
+    "/{creation_id}/comments",
+    response_model=CommentListResponse,
+    summary="获取作品的评论列表",
+)
+async def get_creation_comments(
     creation_id: int,
-    page: int = Query(1, ge=1, description="Page number"),
-    limit: int = Query(10, ge=1, le=50, description="Items per page"),
-    session: AsyncSession = Depends(get_session),
-) -> CreationCommentListResponse:
-    """Return paginated comments for a given creation."""
-    # Validate creation existence to align with API contract.
-    creation_statement = select(DBCreation.id).where(DBCreation.id == creation_id)
-    creation_result = await session.exec(creation_statement)
-    if not creation_result.first():
-        raise HTTPException(status_code=404, detail="Creation not found")
+    *,
+    db: AsyncSession = Depends(get_session),
+    page: int = Query(1, ge=1, description="页码，从1开始"),
+    page_size: int = Query(10, ge=1, le=100, description="每页数量")
+) -> CommentListResponse:
+    """
+    Asynchronously retrieves a paginated list of comments for a specific creation.
+    """
+    # 首先验证作品是否存在
+    creation_db = await db.get(Creation, creation_id)
+    if not creation_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Creation not found"
+        )
 
-    offset = (page - 1) * limit
-    comment_statement = (
-        select(DBComment)
-        .where(DBComment.creation_id == creation_id)
-        .order_by(desc(DBComment.created_at))
+    offset = (page - 1) * page_size
+    statement = (
+        select(Comment)
+        .where(Comment.creation_id == creation_id)
         .offset(offset)
-        .limit(limit)
+        .limit(page_size)
+        .order_by(desc(Comment.id))
     )
-    comment_result = await session.exec(comment_statement)
-    comments = comment_result.all()
-    comments_schema = [CommentSchema.model_validate(record) for record in comments]
+    result = await db.exec(statement)
+    comments_db = result.all()
 
-    return CreationCommentListResponse(data=comments_schema)
+    comments_data = [CommentRead.model_validate(c) for c in comments_db]
+    return CommentListResponse(data=comments_data)
 
 
-@router.post("/{creation_id}/like", response_model=CreationLikeResponse)
+@router.post(
+    "/{creation_id}/like", response_model=CreationLikeResponse, summary="点赞作品"
+)
 async def like_creation(
-    creation_id: int,
-    session: AsyncSession = Depends(get_session),
+    creation_id: int, db: AsyncSession = Depends(get_session)
 ) -> CreationLikeResponse:
-    """Increment like counter for a creation."""
-    statement = select(DBCreation).where(DBCreation.id == creation_id)
-    result = await session.exec(statement)
-    creation = result.first()
-    if not creation:
-        raise HTTPException(status_code=404, detail="Creation not found")
+    """
+    Asynchronously increments the like count for a specific creation.
+    """
+    creation_db = await db.get(Creation, creation_id)
+    if not creation_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Creation not found"
+        )
 
-    creation.likes += 1
-    session.add(creation)
-    await session.commit()
-    return CreationLikeResponse()
+    creation_db.likes += 1
+    db.add(creation_db)
+    await db.commit()
+    await db.refresh(creation_db)
+
+    like_data = CreationLikeUpdate(likes=creation_db.likes)
+    return CreationLikeResponse(data=like_data)
 
 
-@router.post("/{creation_id}/comments", response_model=CreationCommentCreateResponse)
+@router.post(
+    "/{creation_id}/comments",
+    response_model=CommentCreateResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="发表作品评论",
+)
 async def create_creation_comment(
-    creation_id: int,
-    payload: CreationCommentCreateRequest,
-    session: AsyncSession = Depends(get_session),
-) -> CreationCommentCreateResponse:
-    """Create a new comment for the given creation."""
-    statement = select(DBCreation).where(DBCreation.id == creation_id)
-    result = await session.exec(statement)
-    creation = result.first()
-    if not creation:
-        raise HTTPException(status_code=404, detail="Creation not found")
+    creation_id: int, comment_in: CommentCreate, db: AsyncSession = Depends(get_session)
+) -> CommentCreateResponse:
+    """
+    Asynchronously adds a new comment to a specific creation.
+    """
+    # 开启事务，确保作品评论数和评论记录的一致性
+    creation_db = await db.get(Creation, creation_id)
+    if not creation_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Creation to comment on not found",
+        )
 
-    db_comment = DBComment(content=payload.content, creation_id=creation_id)
-    creation.comments += 1
-
-    session.add(db_comment)
-    session.add(creation)
-    await session.commit()
-    await session.refresh(db_comment)
-
-    return CreationCommentCreateResponse(
-        data=CommentSchema.model_validate(db_comment)
+    # 创建新的评论对象
+    new_comment_db = Comment.model_validate(
+        comment_in, update={"creation_id": creation_id}
     )
+
+    # 更新作品的评论数
+    creation_db.comments += 1
+
+    db.add(new_comment_db)
+    db.add(creation_db)
+
+    await db.commit()
+
+    # 刷新以获取数据库生成的ID和默认值
+    await db.refresh(new_comment_db)
+
+    comment_data = CommentRead.model_validate(new_comment_db)
+    return CommentCreateResponse(data=comment_data)

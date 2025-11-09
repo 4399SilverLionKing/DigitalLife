@@ -1,3 +1,5 @@
+import { PaginationQuery } from '@/common/types/request';
+
 /**
  * @description 数字生命核心状态
  */
@@ -9,6 +11,8 @@ export interface LifeStatus {
   comments: number;
   lifespan: string; // ISO 8601 string
   createdAt: string; // ISO 8601 string
+  tools: number;
+  creations: number;
 }
 
 /**
@@ -24,10 +28,7 @@ export interface LifeComment {
 /**
  * @description 获取评论列表的请求参数
  */
-export interface GetLifeCommentsParams {
-  page?: number;
-  pageSize?: number;
-}
+export interface GetLifeCommentsParams extends PaginationQuery {}
 
 /**
  * @description 发表评论的请求体

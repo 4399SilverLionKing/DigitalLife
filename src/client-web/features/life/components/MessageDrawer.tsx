@@ -10,82 +10,15 @@ import {
   DrawerTrigger,
 } from '@/common/components/ui/drawer';
 
-import MessageItem, { MessageItemProps } from './MessageItem';
-
-const mockMessages: MessageItemProps[] = [
-  {
-    content: "Hey, I've been thinking about our project's direction.",
-    timestamp: '2h ago',
-    isReply: false,
-  },
-  {
-    content: 'Oh? What are your thoughts?',
-    timestamp: '1h ago',
-    isReply: true,
-  },
-  {
-    content: 'I think we should focus more on user experience first.',
-    timestamp: '1h ago',
-    isReply: false,
-  },
-  {
-    content: 'That makes sense. Agreed!',
-    timestamp: '30m ago',
-    isReply: true,
-  },
-  {
-    content: 'Anyone else have input on this?',
-    timestamp: '5m ago',
-    isReply: false,
-  },
-  {
-    content: 'That makes sense. Agreed!',
-    timestamp: '30m ago',
-    isReply: true,
-  },
-  {
-    content: 'Anyone else have input on this?',
-    timestamp: '5m ago',
-    isReply: false,
-  },
-  {
-    content: "Hey, I've been thinking about our project's direction.",
-    timestamp: '2h ago',
-    isReply: false,
-  },
-  {
-    content: 'Oh? What are your thoughts?',
-    timestamp: '1h ago',
-    isReply: true,
-  },
-  {
-    content: 'I think we should focus more on user experience first.',
-    timestamp: '1h ago',
-    isReply: false,
-  },
-  {
-    content: 'That makes sense. Agreed!',
-    timestamp: '30m ago',
-    isReply: true,
-  },
-  {
-    content: 'Anyone else have input on this?',
-    timestamp: '5m ago',
-    isReply: false,
-  },
-  {
-    content: 'That makes sense. Agreed!',
-    timestamp: '30m ago',
-    isReply: true,
-  },
-  {
-    content: 'Anyone else have input on this?',
-    timestamp: '5m ago',
-    isReply: false,
-  },
-];
+import { useGetLifeComments } from '../life.hook';
+import MessageItem from './MessageItem';
 
 export default function CreationDrawer() {
+  const { data: comments } = useGetLifeComments({
+    page: 1,
+    page_size: 10,
+  });
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -106,13 +39,12 @@ export default function CreationDrawer() {
         {/* 3. 创建一个可滚动的内容区域 */}
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-4">
           <div className="mt-8 space-y-4">
-            {mockMessages.map((msg, index) => (
+            {comments?.map(msg => (
               <MessageItem
-                key={index}
+                key={msg.id}
                 content={msg.content}
-                timestamp={msg.timestamp}
-                isReply={msg.isReply}
-                className="bg-white/5 hover:bg-white/0"
+                timestamp={msg.createdAt}
+                isReply={msg.replyContent != null}
               />
             ))}
           </div>

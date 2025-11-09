@@ -1,7 +1,9 @@
 // src/features/thought/thought.hook.ts
 import { useQuery } from '@tanstack/react-query';
+
+import { PaginationQuery } from '@/common/types/request';
+
 import * as thoughtApi from './thought.api';
-import type { PaginationParams } from './thought.type';
 
 /**
  * Query Keys Factory for Thoughts
@@ -10,7 +12,7 @@ import type { PaginationParams } from './thought.type';
 export const thoughtKeys = {
   all: ['thoughts'] as const,
   lists: () => [...thoughtKeys.all, 'list'] as const,
-  list: (params: PaginationParams) => [...thoughtKeys.lists(), params] as const,
+  list: (params: PaginationQuery) => [...thoughtKeys.lists(), params] as const,
 };
 
 /**
@@ -18,7 +20,7 @@ export const thoughtKeys = {
  * 当 `params` (分页参数) 改变时，TanStack Query 会自动重新获取数据。
  * @param params - Pagination parameters { page, pageSize }
  */
-export const useGetThoughts = (params: PaginationParams) => {
+export const useGetThoughts = (params: PaginationQuery) => {
   return useQuery({
     // 查询键包含分页参数，以确保不同页面的数据被独立缓存
     queryKey: thoughtKeys.list(params),

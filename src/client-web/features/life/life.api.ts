@@ -1,6 +1,6 @@
 // src/features/life/life.api.ts
+import customFetch from '@/common/utils/customFetch/index';
 
-import customFetch from '@/common/utils/customFetch';
 import type {
   GetLifeCommentsParams,
   LifeComment,
@@ -23,12 +23,11 @@ export const getLifeStatus = async (): Promise<LifeStatus> => {
  * @returns {Promise<LifeComment[]>} 评论列表数组
  */
 export const getLifeComments = async (
-  params: GetLifeCommentsParams,
+  params: GetLifeCommentsParams
 ): Promise<LifeComment[]> => {
-  const response = await customFetch.get<LifeComment[]>(
-    '/api/life/comments', 
-    {params}
-  );
+  const response = await customFetch.get<LifeComment[]>('/api/life/comments', {
+    params,
+  });
   return response.data;
 };
 
@@ -38,11 +37,11 @@ export const getLifeComments = async (
  * @returns {Promise<LifeComment>} 新创建的评论对象
  */
 export const postLifeComment = async (
-  payload: PostLifeCommentPayload,
+  payload: PostLifeCommentPayload
 ): Promise<LifeComment> => {
   const response = await customFetch.post<LifeComment>(
     '/api/life/comments',
-    payload,
+    payload
   );
   return response.data;
 };

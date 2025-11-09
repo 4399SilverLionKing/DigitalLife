@@ -23,6 +23,8 @@ class DigitalLife(SQLModel, table=True):
     lifespan: Optional[datetime.datetime] = Field(default=None)
     # 对应 DEFAULT now()，使用 default_factory 在创建对象时生成时间
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
+    tools: int = Field(default=0)
+    creations: int = Field(default=0)
 
 
 # ------------------------------------------------------------------

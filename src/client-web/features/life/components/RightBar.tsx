@@ -13,14 +13,14 @@ export default function RightBar() {
   const { data: status } = useGetLifeStatus();
 
 const statsData: GlassIconsItem[] = [
-    { icon: <Eye />, color: 'blue', label: status?.visitors.toString() ?? '-' },
-    { icon: <Heart />, color: 'red', label: status?.likes.toString() ?? '-' },
-    { icon: <MessageCircle />, color: 'purple', label: status?.comments.toString() ?? '-' },
+    { icon: <Eye />,  label: status?.visitors.toString() ?? '-' },
+    { icon: <Heart />,  label: status?.likes.toString() ?? '-' },
+    { icon: <MessageCircle />, label: status?.comments.toString() ?? '-' },
 ];
 
   const toolsData: GlassIconsItem[] = [
-    { icon: <Pickaxe />, color: 'indigo', label: '45' },
-    { icon: <PenSquare />, label: '4456' },
+    { icon: <Pickaxe />, label: status?.tools.toString() ?? '-' },
+    { icon: <PenSquare />, label: status?.creations.toString() ?? '-' },
   ];
   
   return (

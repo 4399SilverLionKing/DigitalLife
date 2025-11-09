@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { formatDate } from '@/common/utils/dataFormat';
 import { cn } from '@/common/utils/tailwindUtil';
 
 // 导入我们刚刚创建的 cn 函数
@@ -45,7 +46,9 @@ const MessageItem: React.FC<MessageItemProps> = ({
       <p className="ml-5 flex-grow truncate text-gray-200">{content}</p>
 
       {/* 时间戳：不收缩，保持固定大小 */}
-      <span className="flex-shrink-0 text-xs text-gray-400">{timestamp}</span>
+      <span className="flex-shrink-0 text-xs text-gray-400">
+        {formatDate(timestamp)}
+      </span>
     </div>
   );
 };

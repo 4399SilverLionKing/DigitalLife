@@ -1,32 +1,33 @@
-from typing import Optional
+# File: app/schemas/thought_schema.py
+
 from datetime import datetime
+from typing import List
 
-from pydantic import BaseModel, ConfigDict
-
-
-# 共享的基本字段
-# 对于 thought 这种日志型数据，Create 和 Base 通常是相同的
-class ThoughtBase(BaseModel):
-    cycle_id: Optional[int] = None
-    agent_name: Optional[str] = None
-    content: Optional[str] = None
+from sqlmodel import SQLModel
+from app.schemas.common import BaseResponse
 
 
-# 创建新记录时使用的模型
-class ThoughtCreate(ThoughtBase):
-    pass
+# -------------------------------------------------------------
+# 1. 核心业务数据结构 (Core Business Schemas)
+# -------------------------------------------------------------
 
 
-# 更新 thought 可能不太常见，但为了一致性提供
-class ThoughtUpdate(BaseModel):
-    cycle_id: Optional[int] = None
-    agent_name: Optional[str] = None
-    message: Optional[str] = None
+class ThoughtRead(SQLModel):
+    """Schema for reading a single thought record."""
 
-
-# 从数据库读取数据时使用的模型
-class Thought(ThoughtBase):
     id: int
+    cycle_id: int
+    agent_name: str
+    content: str
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+
+# -------------------------------------------------------------
+# 2. 专用API响应模型 (Dedicated API Response Models)
+# -------------------------------------------------------------
+
+
+class ThoughtListResponse(BaseResponse):
+    """Dedicated response for fetching a list of thoughts."""
+
+    data: List[ThoughtRead]

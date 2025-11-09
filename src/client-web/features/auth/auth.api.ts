@@ -1,3 +1,4 @@
+import customFetch from '@/common/utils/customFetch/index';
 import { useAuthStore } from '@/features/auth/auth.store';
 import type {
   AuthResponse,
@@ -9,8 +10,6 @@ import type {
   ResetPasswordRequest,
   User,
 } from '@/features/auth/auth.type';
-
-import customFetch from '@/common/utils/customFetch';
 
 // 认证API类
 class AuthApi {

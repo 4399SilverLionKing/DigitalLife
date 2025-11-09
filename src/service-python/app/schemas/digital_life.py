@@ -1,35 +1,64 @@
+# File: app/schemas/life_schema.py
+
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict
-
-
-# 共享的基本字段
-class DigitalLifeBase(BaseModel):
-    name: str
-    likes: int = 0
-    visitors: int = 0
-    comments: int = 0
-    lifespan: Optional[datetime] = None
+from sqlmodel import SQLModel
+from app.schemas.common import BaseResponse
 
 
-# 创建新记录时使用的模型 (不需要 id 和 created_at)
-class DigitalLifeCreate(DigitalLifeBase):
-    pass
+# -------------------------------------------------------------
+# 1. 核心业务数据结构 (Core Business Schemas)
+# -------------------------------------------------------------
 
 
-# 更新记录时使用的模型 (所有字段都可选)
-class DigitalLifeUpdate(BaseModel):
-    name: Optional[str] = None
-    likes: Optional[int] = None
-    visitors: Optional[int] = None
-    comments: Optional[int] = None
-    lifespan: Optional[datetime] = None
+class LifeStatusRead(SQLModel):
+    """Schema for reading the digital life status."""
 
-
-# 从数据库读取数据时使用的模型 (包含所有字段)
-class DigitalLife(DigitalLifeBase):
     id: int
+    name: str
+    likes: int
+    visitors: int
+    comments: int
+    lifespan: datetime
+    created_at: datetime
+    tools: int
+    creations: int
+
+
+class CommentRead(SQLModel):
+    """Schema for reading a single comment."""
+
+    id: int
+    content: str
+    reply_content: Optional[str] = None
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+
+class CommentCreate(SQLModel):
+    """Schema for creating a new comment."""
+
+    content: str
+
+
+# -------------------------------------------------------------
+# 2. 专用API响应模型 (Dedicated API Response Models)
+# -------------------------------------------------------------
+
+
+class LifeStatusResponse(BaseResponse):
+    """Dedicated response for fetching the digital life status."""
+
+    data: LifeStatusRead
+
+
+class CommentListResponse(BaseResponse):
+    """Dedicated response for fetching a list of comments."""
+
+    data: List[CommentRead]
+
+
+class CommentCreateResponse(BaseResponse):
+    """Dedicated response after creating a new comment."""
+
+    data: CommentRead
